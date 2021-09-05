@@ -1,6 +1,7 @@
 package com.doctorix.app.office.entity;
 
 import com.doctorix.app.appointment.entity.Appointment;
+import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.patient.entity.Patient;
 import lombok.Data;
 
@@ -43,4 +44,7 @@ public class Office {
 
     @OneToMany(mappedBy = "office")
     private List<Appointment> appointments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "office")
+    private List<Doctor> doctors = new ArrayList<>();
 }
