@@ -3,6 +3,7 @@ package com.doctorix.app.patient.entity;
 import com.doctorix.app.appointment.entity.Appointment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -59,6 +60,8 @@ public class Patient {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Appointment> appointments = new ArrayList<>();
 
-    @Column(name = "vaccinated")
+
+    @Column(name = "is_vaccinated")
+    @Accessors(fluent = true)
     private Boolean isVaccinated = true;
 }

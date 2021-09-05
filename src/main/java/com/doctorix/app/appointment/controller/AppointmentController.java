@@ -5,9 +5,7 @@ import com.doctorix.app.appointment.entity.AppointmentPayload;
 import com.doctorix.app.appointment.repository.AppointmentRepository;
 import com.doctorix.app.appointment.service.AppointmentService;
 import javassist.NotFoundException;
-import lombok.var;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
