@@ -5,11 +5,14 @@ import com.doctorix.app.office.entity.Office;
 import com.doctorix.app.patient.entity.Patient;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -46,19 +49,25 @@ public class Appointment {
     private Doctor doctor;
 
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    @Nullable
     private PostAppointmentNotes postAppointmentNotes;
 
-    @Column(name = "done")
+    @Column(name = "is_done")
+    @Accessors(fluent = true)
     private Boolean isDone = false;
+
+    @Column(name = "is_active")
+    @Accessors(fluent = true)
+    private Boolean isActive = false;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
 }
