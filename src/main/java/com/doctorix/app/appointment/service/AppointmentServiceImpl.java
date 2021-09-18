@@ -91,11 +91,5 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findEndedAppointments();
     }
 
-    @Override
-    public void addNotesToAppointment(PostAppointmentNotesPayload payload, long id) {
-        PostAppointmentNotes postAppointmentNotes = new PostAppointmentNotes();
-        postAppointmentNotes.setNotes(payload.getNotes());
-        Appointment appointment = appointmentRepository.findById(id).get();
-        appointment.setPostAppointmentNotes(postAppointmentNotes);
-    }
+
 }

@@ -25,7 +25,7 @@ public interface AppointmentService {
 
     List<Appointment> findEndedAppointments();
 
-    void addNotesToAppointment(PostAppointmentNotesPayload payload, long id);
+
 
 
 }
