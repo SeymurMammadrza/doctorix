@@ -2,6 +2,8 @@ package com.doctorix.app.appointment.service;
 
 import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.appointment.entity.AppointmentPayload;
+import com.doctorix.app.appointment.entity.PostAppointmentNotes;
+import com.doctorix.app.appointment.entity.PostAppointmentNotesPayload;
 import com.doctorix.app.appointment.repository.AppointmentRepository;
 import com.doctorix.app.doctor.repository.DoctorRepository;
 import com.doctorix.app.office.repository.OfficeRepository;
@@ -50,6 +52,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment updateById(AppointmentPayload appointmentPayload, long id) {
+        Appointment appointment = findById(id);
+        appointment.isActive(true);
+        appointment.setAppointmentType(appointmentPayload.getAppointmentType());
+        appointment.setAppointmentDate(appointmentPayload.getDate());
+        appointment.setAppointmentTime(appointmentPayload.getTime());
+        appointment.setUpdatedAt(LocalDateTime.now());
+        appointment.setDoctor(doctorRepository.getById(appointmentPayload.getDoctorId()));
+        appointment.setPatient(patientRepository.getById(appointmentPayload.getPatientId()));
+        appointment.setOffice(officeRepository.getById(appointmentPayload.getOfficeId()));
+
+        log.info("Service {}", appointment);
+        appointment = appointmentRepository.save(appointment);
+
+        return appointment;
+    }
+
+    @Override
     public Appointment findById(long id) {
         return appointmentRepository.findById(id).get();
     }
@@ -69,5 +89,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<Appointment> findEndedAppointments() {
         return appointmentRepository.findEndedAppointments();
+    }
+
+    @Override
+    public void addNotesToAppointment(PostAppointmentNotesPayload payload, long id) {
+        PostAppointmentNotes postAppointmentNotes = new PostAppointmentNotes();
+        postAppointmentNotes.setNotes(payload.getNotes());
+        Appointment appointment = appointmentRepository.findById(id).get();
+        appointment.setPostAppointmentNotes(postAppointmentNotes);
     }
 }
