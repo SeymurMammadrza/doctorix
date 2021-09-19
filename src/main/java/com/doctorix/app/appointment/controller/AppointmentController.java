@@ -61,7 +61,7 @@ public class AppointmentController {
 
         appointmentRepository.delete(appointment);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        response.put("deleted appointment with this id " + appointmentId, Boolean.TRUE);
         return response;
     }
 }
