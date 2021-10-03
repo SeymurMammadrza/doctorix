@@ -1,10 +1,12 @@
 package com.doctorix.app.appointment.entity;
 
 import com.doctorix.app.doctor.entity.Doctor;
-import com.doctorix.app.office.entity.Office;
 import com.doctorix.app.patient.entity.Patient;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,13 +16,13 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 /*
 Office (one -to - many with Appointment , many-to-many with Doctor) (FK officeId) due to this we
-we have entity itself not the list of it
+ have entity itself not the list of it
  */
-@Data
+@Getter
+@Setter
 @Entity(name = "appointments")
 public class Appointment {
     @Id
@@ -40,12 +42,11 @@ public class Appointment {
     private LocalTime appointmentTime;
 
     @ManyToOne
+    @JsonBackReference
     private Patient patient;
 
     @ManyToOne
-    private Office office;
-
-    @ManyToOne
+    @JsonBackReference
     private Doctor doctor;
 
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)

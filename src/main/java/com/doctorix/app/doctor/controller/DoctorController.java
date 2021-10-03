@@ -34,6 +34,11 @@ public class DoctorController {
 
     }
 
+    @GetMapping("/list")
+    ResponseEntity<List<Doctor>> getAll() {
+        return new ResponseEntity<>(doctorService.findAll(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/appointment/list")
     ResponseEntity<List<Appointment>> getAllDoctorAppointments(@PathVariable(value = "id") Long id) {
         return new ResponseEntity<>(doctorService.findDoctorAppointments(id), HttpStatus.OK);

@@ -1,12 +1,19 @@
 package com.doctorix.app.doctor.service;
+
 import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.appointment.entity.PostAppointmentNotes;
 import com.doctorix.app.appointment.entity.PostAppointmentNotesPayload;
+import com.doctorix.app.appointment.repository.AppointmentRepository;
+import com.doctorix.app.appointment.service.AppointmentService;
 import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.doctor.entity.DoctorPayload;
 import com.doctorix.app.doctor.repository.DoctorRepository;
 import com.doctorix.app.office.repository.OfficeRepository;
+import com.doctorix.app.office.service.OfficeService;
+import com.doctorix.app.patient.entity.Patient;
+import com.doctorix.app.patient.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,12 +23,35 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class DoctorServiceImpl implements DoctorService {
+
     private DoctorRepository doctorRepository;
     private OfficeRepository officeRepository;
+    private OfficeService officeService;
+    private AppointmentService appointmentService;
+    private AppointmentRepository appointmentRepository;
+    private PatientRepository patientRepository;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, OfficeRepository officeRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, OfficeRepository officeRepository, OfficeService officeService, AppointmentService appointmentService, AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
         this.doctorRepository = doctorRepository;
         this.officeRepository = officeRepository;
+        this.officeService = officeService;
+        this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+
+    }
+
+    @Override
+    public Doctor findById(long id) {
+        return doctorRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "doctor with this $id is not found !"));
+
+    }
+
+    @Override
+    public List<Doctor> findAll() {
+        List<Doctor> doctors = new ArrayList<>();
+        doctorRepository.findAll().forEach(doctors::add);
+        return doctors;
     }
 
     @Override
@@ -42,7 +72,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setLastName(doctorPayload.getLastName());
         doctor.setGender(doctorPayload.getGender());
         doctor.setSpeciality(doctorPayload.getSpeciality());
-        doctor.setOffice(officeRepository.getById(doctorPayload.getOfficeId()));
+        doctor.setOffice(officeService.findById(doctorPayload.getOfficeId()));
         List<Appointment> emptyAppointments = new ArrayList<>();
         doctor.setAppointments(emptyAppointments);
         log.info("Service {}", doctor);
@@ -51,13 +81,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor findById(long id) {
-        return doctorRepository.findById(id).get();
-    }
-
-    @Override
     public List<Appointment> findDoctorAppointments(long doctorId) {
-        Doctor doctor = doctorRepository.findById(doctorId).get();
+        Doctor doctor = findById(doctorId);
         return doctor.getAppointments();
     }
 
@@ -73,5 +98,22 @@ public class DoctorServiceImpl implements DoctorService {
         return appointment;
     }
 
-
+    @Override
+    public Patient changeVaccineStatusOfPatientOfDoctor(long doctorId, long appointmentId) {
+        if (appointmentRepository.existsById(appointmentId)) {
+            Patient patient = findDoctorAppointments(doctorId)
+                    .stream()
+                    .filter(doctorAppointment -> doctorAppointment.getId()
+                            .equals(appointmentId))
+                    .collect(Collectors.toList())
+                    .get(0)
+                    .getPatient();
+            boolean value = patient.isVaccinated();
+            patient.isVaccinated(!value);
+            patientRepository.save(patient);
+            return patient;
+        } else {
+            throw new ObjectNotFoundException(appointmentId, "appointment with this $id is not found !");
+        }
+    }
 }
