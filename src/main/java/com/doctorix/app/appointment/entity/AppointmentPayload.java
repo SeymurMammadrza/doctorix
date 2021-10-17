@@ -12,5 +12,5 @@ public class AppointmentPayload {
     private LocalTime time;
     private Long patientId;
     private Long doctorId;
-    private Long officeId;
+
 }

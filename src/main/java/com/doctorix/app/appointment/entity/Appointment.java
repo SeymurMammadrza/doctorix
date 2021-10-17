@@ -4,6 +4,7 @@ import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.patient.entity.Patient;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,6 +52,7 @@ public class Appointment {
 
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
     @Nullable
+    @JsonManagedReference
     private PostAppointmentNotes postAppointmentNotes;
 
     @Column(name = "is_done")

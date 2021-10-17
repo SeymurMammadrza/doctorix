@@ -4,6 +4,7 @@ import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.appointment.entity.PostAppointmentNotes;
 import com.doctorix.app.appointment.entity.PostAppointmentNotesPayload;
 import com.doctorix.app.appointment.repository.AppointmentRepository;
+import com.doctorix.app.appointment.repository.PostAppointmentRepository;
 import com.doctorix.app.appointment.service.AppointmentService;
 import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.doctor.entity.DoctorPayload;
@@ -30,14 +31,16 @@ public class DoctorServiceImpl implements DoctorService {
     private AppointmentService appointmentService;
     private AppointmentRepository appointmentRepository;
     private PatientRepository patientRepository;
+    private PostAppointmentRepository postAppointmentRepository;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, OfficeRepository officeRepository, OfficeService officeService, AppointmentService appointmentService, AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, OfficeRepository officeRepository, OfficeService officeService, AppointmentService appointmentService, AppointmentRepository appointmentRepository, PatientRepository patientRepository, PostAppointmentRepository postAppointmentRepository) {
         this.doctorRepository = doctorRepository;
         this.officeRepository = officeRepository;
         this.officeService = officeService;
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.postAppointmentRepository = postAppointmentRepository;
 
     }
 
@@ -95,6 +98,8 @@ public class DoctorServiceImpl implements DoctorService {
         PostAppointmentNotes postAppointmentNotes = new PostAppointmentNotes();
         postAppointmentNotes.setNotes(payload.getNotes());
         appointment.setPostAppointmentNotes(postAppointmentNotes);
+        postAppointmentNotes.setAppointment(appointment);
+        postAppointmentRepository.save(postAppointmentNotes);
         return appointment;
     }
 
