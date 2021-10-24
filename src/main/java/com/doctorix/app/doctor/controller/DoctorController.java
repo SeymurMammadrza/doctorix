@@ -2,10 +2,14 @@ package com.doctorix.app.doctor.controller;
 
 import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.appointment.entity.PostAppointmentNotesPayload;
+import com.doctorix.app.appointment.repository.AppointmentRepository;
+import com.doctorix.app.appointment.service.AppointmentService;
 import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.doctor.entity.DoctorPayload;
 import com.doctorix.app.doctor.repository.DoctorRepository;
 import com.doctorix.app.doctor.service.DoctorService;
+import com.doctorix.app.patient.entity.Patient;
+import com.doctorix.app.patient.entity.PatientPayload;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +26,14 @@ public class DoctorController {
 
     private final DoctorService doctorService;
     private final DoctorRepository doctorRepository;
+    private final AppointmentService appointmentService;
+    private final AppointmentRepository appointmentRepository;
 
-    public DoctorController(DoctorService doctorService, DoctorRepository doctorRepository) {
+    public DoctorController(DoctorService doctorService, DoctorRepository doctorRepository, AppointmentService appointmentService, AppointmentRepository appointmentRepository) {
         this.doctorService = doctorService;
         this.doctorRepository = doctorRepository;
+        this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @GetMapping("/{id}")
@@ -73,4 +81,14 @@ public class DoctorController {
         response.put("deleted doctor with this id " + doctorId, Boolean.TRUE);
         return response;
     }
+
+    @GetMapping("/{doctorId}/appointment/{appointmentId}/changeVaccineStatus")
+    ResponseEntity<Patient> changeVaccineStatusOfPatientOfDoctor(@PathVariable(value = "doctorId") Long doctorId, @PathVariable(value="appointmentId") Long appointmentId){
+        System.out.println("Patient Vaccine Status Controller"  );
+        return new ResponseEntity<>(doctorService.changeVaccineStatusOfPatientOfDoctor(doctorId, appointmentId), HttpStatus.ACCEPTED);
+    }
+
+
+
+
 }

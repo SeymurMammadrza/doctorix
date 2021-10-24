@@ -1,6 +1,7 @@
 package com.doctorix.app.patient.service;
 
 
+import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.patient.entity.Patient;
 import com.doctorix.app.patient.entity.PatientPayload;
 
@@ -11,4 +12,5 @@ public interface PatientService {
     Patient create(PatientPayload patientPayload);
     Patient updateById(PatientPayload patientPayload, long id);
     Patient findById(long id);
+    List <Appointment> listAppointments(long id);
 }

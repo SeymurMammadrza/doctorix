@@ -61,6 +61,12 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "patient with this $id is not found !"));
     }
 
+    @Override
+    public List<Appointment> listAppointments(long id ) {
+       Patient patient = findById(id);
+       return patient.getAppointments();
+    }
+
     public PatientServiceImpl(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
     }

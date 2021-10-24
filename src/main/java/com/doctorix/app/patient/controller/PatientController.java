@@ -6,6 +6,7 @@ import com.doctorix.app.doctor.entity.DoctorPayload;
 import com.doctorix.app.patient.entity.Patient;
 import com.doctorix.app.patient.entity.PatientPayload;
 import com.doctorix.app.patient.service.PatientService;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class PatientController {
     ResponseEntity<Patient> createPatient(@RequestBody PatientPayload patientPayload){
         System.out.println("Controller " + patientPayload);
         return new ResponseEntity<>(patientService.create(patientPayload), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{patientId}/appointment/list")
+    ResponseEntity<List<Appointment>> getPatientAppointments(@PathVariable (value="patientId") Long patientId){
+    return new ResponseEntity<>(patientService.listAppointments(patientId), HttpStatus.OK);
     }
 }
