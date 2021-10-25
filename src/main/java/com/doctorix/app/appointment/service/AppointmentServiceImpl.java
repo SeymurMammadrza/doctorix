@@ -2,13 +2,12 @@ package com.doctorix.app.appointment.service;
 
 import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.appointment.entity.AppointmentPayload;
-import com.doctorix.app.appointment.entity.PostAppointmentNotes;
-import com.doctorix.app.appointment.entity.PostAppointmentNotesPayload;
 import com.doctorix.app.appointment.repository.AppointmentRepository;
 import com.doctorix.app.doctor.repository.DoctorRepository;
 import com.doctorix.app.office.repository.OfficeRepository;
 import com.doctorix.app.patient.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,7 +42,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setDoctor(doctorRepository.getById(appointmentPayload.getDoctorId()));
         appointment.setPatient(patientRepository.getById(appointmentPayload.getPatientId()));
-        appointment.setOffice(officeRepository.getById(appointmentPayload.getOfficeId()));
 
         log.info("Service {}", appointment);
         appointment = appointmentRepository.save(appointment);
@@ -61,7 +59,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setDoctor(doctorRepository.getById(appointmentPayload.getDoctorId()));
         appointment.setPatient(patientRepository.getById(appointmentPayload.getPatientId()));
-        appointment.setOffice(officeRepository.getById(appointmentPayload.getOfficeId()));
 
         log.info("Service {}", appointment);
         appointment = appointmentRepository.save(appointment);
@@ -71,8 +68,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment findById(long id) {
-        return appointmentRepository.findById(id).get();
-    }
+            return appointmentRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "appointment with this $id is not found !"));
+        }
+
 
     @Override
     public List<Appointment> findAll() {
