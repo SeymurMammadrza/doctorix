@@ -3,7 +3,12 @@ package com.doctorix.app.office.entity;
 import com.doctorix.app.appointment.entity.Appointment;
 import com.doctorix.app.doctor.entity.Doctor;
 import com.doctorix.app.patient.entity.Patient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +18,8 @@ import java.util.List;
 Office (one -to - many with Appointment , many-to-many with Doctor) (FK officeId)
 due to this we have list of the appointments
  */
-@Data
+@Getter
+@Setter
 @Entity(name = "offices")
 public class Office {
     @Id
@@ -43,8 +49,6 @@ public class Office {
     private String email;
 
     @OneToMany(mappedBy = "office")
-    private List<Appointment> appointments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "office")
+    @JsonManagedReference
     private List<Doctor> doctors = new ArrayList<>();
 }

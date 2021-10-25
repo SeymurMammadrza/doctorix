@@ -12,4 +12,7 @@ import java.util.List;
 public interface PatientRepository extends JpaRepository<Patient,Long> {
     @Query("select p from patients p where p.gender=:MALE")//entity-based query
     List<Patient> findMalePatients();
+
+
+
 }

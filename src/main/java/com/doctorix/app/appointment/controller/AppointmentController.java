@@ -46,6 +46,13 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.create(appointmentPayload), HttpStatus.CREATED);
     }
 
+    @PutMapping("/update/{id}")
+    ResponseEntity<Appointment> updateAppointment(@PathVariable(value = "id") Long appointmentId, @RequestBody AppointmentPayload appointmentPayload) {
+        System.out.println("Controller " + appointmentPayload);
+        return new ResponseEntity<>(appointmentService.updateById(appointmentPayload, appointmentId), HttpStatus.ACCEPTED);
+
+    }
+
     @DeleteMapping("/delete/{id}")
     public Map<String, Boolean> deleteAppointment(@PathVariable(value = "id") Long appointmentId)
             throws NotFoundException {
@@ -54,7 +61,7 @@ public class AppointmentController {
 
         appointmentRepository.delete(appointment);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        response.put("deleted appointment with this id " + appointmentId, Boolean.TRUE);
         return response;
     }
 }

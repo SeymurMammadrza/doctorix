@@ -7,6 +7,7 @@ import com.doctorix.app.doctor.repository.DoctorRepository;
 import com.doctorix.app.office.repository.OfficeRepository;
 import com.doctorix.app.patient.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,7 +42,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setDoctor(doctorRepository.getById(appointmentPayload.getDoctorId()));
         appointment.setPatient(patientRepository.getById(appointmentPayload.getPatientId()));
-        appointment.setOffice(officeRepository.getById(appointmentPayload.getOfficeId()));
+
+        log.info("Service {}", appointment);
+        appointment = appointmentRepository.save(appointment);
+
+        return appointment;
+    }
+
+    @Override
+    public Appointment updateById(AppointmentPayload appointmentPayload, long id) {
+        Appointment appointment = findById(id);
+        appointment.isActive(true);
+        appointment.setAppointmentType(appointmentPayload.getAppointmentType());
+        appointment.setAppointmentDate(appointmentPayload.getDate());
+        appointment.setAppointmentTime(appointmentPayload.getTime());
+        appointment.setUpdatedAt(LocalDateTime.now());
+        appointment.setDoctor(doctorRepository.getById(appointmentPayload.getDoctorId()));
+        appointment.setPatient(patientRepository.getById(appointmentPayload.getPatientId()));
 
         log.info("Service {}", appointment);
         appointment = appointmentRepository.save(appointment);
@@ -51,8 +68,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment findById(long id) {
-        return appointmentRepository.findById(id).get();
-    }
+            return appointmentRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "appointment with this $id is not found !"));
+        }
+
 
     @Override
     public List<Appointment> findAll() {
@@ -70,4 +88,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> findEndedAppointments() {
         return appointmentRepository.findEndedAppointments();
     }
+
+
 }
