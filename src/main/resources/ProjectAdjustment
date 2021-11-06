@@ -1,0 +1,13 @@
+Changes in appointment entity
+
+1. Due Amount = Price - (Each Amount Of Payments in List)
+
+2. isFullyPaid = if due amount is 0
+
+3. payment list one to many
+
+Changes in payment entity
+
+1. Payment many to one with appointment
+2. Foreign key appointment id
+3. appointment due amount >= payment amount > 0

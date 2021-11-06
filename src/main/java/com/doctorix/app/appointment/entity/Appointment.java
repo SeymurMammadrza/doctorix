@@ -14,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +43,15 @@ public class Appointment {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime appointmentTime;
 
+    @Column(name="price")
+    private BigDecimal price;
+
+//    Due Amount = Price - (Each Amount Of Payments in List)
+//    isFullyPaid = if due amount is 0
+
+    @Column(name="due_amount")
+    private BigDecimal dueAmount;
+
     @ManyToOne
     @JsonBackReference
     private Patient patient;
@@ -62,6 +72,11 @@ public class Appointment {
     @Column(name = "is_active")
     @Accessors(fluent = true)
     private Boolean isActive = false;
+
+    @Column(name = "is_fullyPaid")
+    @Accessors(fluent = true)
+    private Boolean isFullyPaid = false;
+
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
     @CreatedDate
